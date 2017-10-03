@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Quiz de Atores</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- importando referencia do jquery para conseguir fazer requisição ajax para API de personagens-->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    </head>
+    <body>
+
+        <!-- div com a imagem que será preenchida com a url da imagem do personagem buscada da api -->
+        <div class="content">
+            <h1 class="content__item">Teste seu conhecimento</h1>
+            <h2>E advinha quem são os atores!!</h2>
+        </div>
+        <div class="person">
+          <h1 class="person__title">Qual o nome do Ator?</h1>
+          <img class="person__img" src="artistas.jpg" id="imgPersonagem" />
+        </div>
+
+        <div class="points">
+          <!-- o html do span abaixo armazena a pontuação atual do usuario -->
+          <h1 class="points__item">Pontuação: <span class="points__pontuaction" id="spanPontuacao">0</span></h1>
+          <br/>
+          <br/>
+
+
+          <!-- campos de entrada do usuario, para que ele possa interagir com o sistema
+          (input para digitar o nome e os botões para confirmar, próximo e desisto) -->
+          <h2 class="aswer" for="txtNomePersonagem">Nome do Ator:</h2>
+          <br>
+          <input class="form-control" type="text" style="width: 350px" id="txtNomePersonagem" placeholder="digite aqui o nome do ator da imagem">
+          <br>
+          <br>
+          <button class="btn btn-success" type="button" id="btnConfirmar" onclick="verificarNomePersonagem()" name="button">Confirmar</button>
+          <button class="btn btn-primary" type="button" onclick="buscarPersonagem()" name="button">Próxima imagem</button>
+          <button class="btn btn-danger" type="button" onclick="exibirNomePersonagem()" name="button">Desisto</button>
+
+        </div>
+
+        <!-- div escondida com o nome do personagem. A div é exibida quando o usuario clica no botão Desisto-->
+        <div class="identity" id="divNomePersonagem" style="clear: both; display: none">
+            <span class="identity__person" id="spanNomePersonagem"></span>
+        </div>
+
+        <script>
+
+          // funcão responsável principalmente por buscar uma nova imagem
+          function buscarPersonagem(){
+
+            // habilitando botão de confirmar caso ele tenha sido desabilitado quando o usuario clicou no botão de desisto
+            document.getElementById("btnConfirmar").disabled = false;
+
+            // escondendo nome do personagem caso ele tenha sido exibido quando o usuario clicou no botão de desisto
+            document.getElementById("divNomePersonagem").style.display = "none";
+
+            // limpando input que o usuario digita o nome do personagem
+            document.getElementById("txtNomePersonagem").value = "";
+
+            // pegando um numero aleatorio de 0 à 15.000
+            var numeroAleatorio = Math.random() * 15000;
+
+            // arredondando para cima o numero aleatório
+            var idAleatorioPersonagem = Math.ceil(numeroAleatorio);
+
+            // convertendo numero aleatório que antes era do tipo Number para o tipo String
+            // para que seja possivel pegar a quantidade de caracteres do numero aleatório com o método
+            // .length logo mais abaixo.
+            var numeroAleatorio = numeroAleatorio.toString();
+
+            // preenchendo com zeros a esquerda até a variavel idAleatorioPersonagem ter 7 digitos
+            while (idAleatorioPersonagem.length < 7) {
+              idAleatorioPersonagem = "0" + idAleatorioPersonagem;
+            }
+
+            // montando a url de chamada para a api de personagens, concatenando o id aleatório.
+            var url = "http://www.theimdbapi.org/api/person?person_id=nm" + idAleatorioPersonagem
+
+            // fazendo de fato a requisição para api de personagens passando a url com
+            // o id que acabamos de montar acima
+            $.get(url).success(function(conteudoRetornado){
+              // somente cai aqui dentro caso a api retorne com sucesso, no caso dessa api quase sempre
+
+              // a variavel "conteudoRetornado" é a resposta da requisão, é o json, ou seja, toda a informação
+              // que vier será armazenada nessa variavel
+
+              // acessando a url da imagem e salvando na variavel "urlImagem"
+              var urlImagem = conteudoRetornado.image.poster;
+
+              // verificando se a url da imagem buscada contem a palavra "media-imdb", caso contenha,
+              // é feito uma nova chamada para buscar outra.
+              // o método indexOf da verdadeiro quando ele retorna um numero maior que -1, ou seja, 0, 1, ect...
+              if(urlImagem.indexOf("media-imdb") > -1){
+                // caiu aqui porque a ul contem a palavra "media-imdb", então busca uma outra imagem, pois essa é zuada.
+                buscarPersonagem();
+
+                // para não executar mais nada, simplesmente para parar de executar o que estiver pra baixo.
+                return false;
+              }
+
+              // armazenando o nome do personagem que veio no retorno da api
+              var nomePersonagem = conteudoRetornado.title;
+
+              // inserindo na tag img a url da imagem retornada da resposta da API e setando ela no atributo src da tag img
+              document.getElementById("imgPersonagem").setAttribute("src", urlImagem);
+
+              // inserindo o nome do personagem que veio tbm da resposta da API e setando ele para dentro
+              // do spanNomePersonagem, que a principio ficará escondido, e só será exibido quando o usuario
+              // clicar no botão de Desisto
+              document.getElementById("spanNomePersonagem").innerHTML = nomePersonagem;
+            }).error(function(conteudoDoErro){
+              console.log();
+              alert("Erro ao realizar a requisição de dados");
+            });
+          }
+
+          // chamando a função de buscar uma nova imagem da api quando carregar a tela pela primeira vez
+          buscarPersonagem();
+
+          // essa função apenas exibe o nome do personagem que esta escondido dentro de uma div
+          function exibirNomePersonagem(){
+
+            // exibindo a div que tem o nome do personagem escondido
+            document.getElementById("divNomePersonagem").style.display = "block";
+
+            // desabilitando o botão de confirmar, para que o usuario não pegue a
+            // resposta dada e digite ela e confirme e incremente sua pontuação.
+            document.getElementById("btnConfirmar").disabled = true;
+          }
+
+          // função chamada quando clicado no botão de confirmar, ela verifica se o usuario acertou ou errou,
+          // e soma ou subtrai de acordo com a resposta correta ou errada.
+          function verificarNomePersonagem(){
+
+            // pegando o nome do personagem que o usuario digitou
+            var nomePersonagemDigitado = document.getElementById("txtNomePersonagem").value;
+
+            // pegando o nome verdadeiro que esta escondido para comparar o o nome que o usuario digitou
+            var nomeVerdadeiroPersonagem = document.getElementById("spanNomePersonagem").innerHTML;
+
+            // pegando a pontuação atual do usuario, que é o html que esta dentro do spanPontuacao
+            var pontuacaoAtual = document.getElementById("spanPontuacao").innerHTML;
+
+            // verificando se o nome digitado esta correto, ou seja, comparando o nome digitado com o verdadeiro
+            if(nomePersonagemDigitado == nomeVerdadeiroPersonagem){
+              alert("Parabéns, você acertou!!!");
+              // incrementando um ponto para a pontuação do usuario
+              // observação, o sinal de positivo antes da variavel pontuacaoAtual está convertendo
+              // o valor da variavel pontuacaoAtual para o tipo Number e só depois incrementando + 1
+              document.getElementById("spanPontuacao").innerHTML = +pontuacaoAtual + 1;
+            }else{
+              alert("Infelizmente você errou !!!");
+              // subtraindo um ponto da pontuação do usuario
+              document.getElementById("spanPontuacao").innerHTML = +pontuacaoAtual - 1;
+            }
+
+            // após fazer o que a função tiver feito acima, decrementado ou somado a pontuação,
+            // então ela chama a função de buscar um novo personagem para o usuario tentar acertar novamente.
+            buscarPersonagem();
+
+          }
+
+        </script>
+
+    </body>
+</html>

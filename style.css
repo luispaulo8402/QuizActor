@@ -1,0 +1,53 @@
+@media screen and (max-width: 1000px) {
+  .points {
+    float: left; }
+
+  .identity__person {
+    margin-top: 2px; } }
+.content {
+  text-align: center;
+  color: black;
+  font-size: 40px;
+  background-color: blue;
+  margin-top: -20px;
+  height: 160px; }
+  .content__item {
+    padding-top: 30px;
+    font-family: sans-serif; }
+
+.person {
+  float: left;
+  margin: 20px; }
+  .person__title {
+    color: black; }
+  .person__img {
+    margin-top: 20px;
+    height: 380px;
+    width: 380px; }
+
+.points {
+  margin-top: 50px;
+  float: right;
+  margin-right: 20%; }
+  .points__item {
+    margin-left: 10%; }
+  .points__pontuaction {
+    margin-left: 30px;
+    color: black;
+    font-size: 40pt; }
+
+.aswer {
+  color: black;
+  font-size: 20px;
+  margin-left: 90px; }
+
+.btn {
+  margin: 10px; }
+
+.identity__person {
+  float: right;
+  margin-right: 25%;
+  font-size: 30pt;
+  margin-top: -70px; }
+
+/*# sourceMappingURL=style.css.map */

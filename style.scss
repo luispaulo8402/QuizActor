@@ -1,0 +1,67 @@
+//variaveis para se reutilizar
+$cor-legal: #BADA55;
+$cor-black: black;
+$font-big: 40px;
+$cor-blue: blue;
+@media screen and(max-width: 1000px){
+  .points{
+    float: left;
+  }
+  .identity__person{
+    margin-top: 2px;
+  }
+}
+.content{
+  text-align: center;
+  color: $cor-black;
+  font-size: $font-big;
+  background-color: $cor-blue;
+  margin-top: -20px;
+  height: 160px;
+  &__item{
+    padding-top: 30px;
+    font-family: sans-serif;
+  }
+}
+.person{
+  float: left;
+  margin: 20px;
+  &__title{
+    color:$cor-black;
+  }
+  &__img{
+    margin-top: 20px;
+    height: 380px;
+    width: 380px;
+  }
+}
+
+.points{
+  margin-top: 50px;
+  float: right;
+  margin-right: 20%;
+  &__item{
+    margin-left: 10%;
+  }
+  &__pontuaction{
+    margin-left:30px;
+    color: black;
+    font-size: 40pt;
+  }
+}
+.aswer{
+  color: $cor-black;
+  font-size: 20px;
+  margin-left: 90px;
+}
+.btn{
+  margin: 10px;
+}
+.identity{
+  &__person{
+    float: right;
+    margin-right: 25%;
+    font-size: 30pt;
+    margin-top: -70px;
+  }
+}
